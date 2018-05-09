@@ -7,7 +7,9 @@ package interfaz;
 
 import static java.awt.Color.*;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.net.URL;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,7 +23,9 @@ import logica.Control;
  */
 public class Principal extends javax.swing.JFrame {
     
-    int[] casillas;
+    
+    ArrayList<ArrayList<Integer>> posicionesManzana;
+    ArrayList<ArrayList<Integer>> posicionesCaballos;
     
     
     /**
@@ -32,11 +36,8 @@ public class Principal extends javax.swing.JFrame {
         setResizable(false);
         this.setTitle("ALPHAZERO");
         this.setLocationRelativeTo(null);
-        casillas = new int[36];
-        for (int i = 0; i < 36; i++) {
-            casillas[i] = i;
-        }
-        
+        posicionesManzana = new ArrayList<>();
+        posicionesCaballos = new ArrayList<>();
         cargarTablero();
     }
 
@@ -151,15 +152,42 @@ public class Principal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null,"No puede ingresar tantos items","Error", JOptionPane.ERROR_MESSAGE);
                 items.setText(null);
             }
-           else if ((numeroItems % 2)== 0) {
+           else if ((numeroItems % 2) == 0) {
                 JOptionPane.showMessageDialog(null,"Ingrese un número impar Ej: "+ (numeroItems-1),"Error", JOptionPane.WARNING_MESSAGE);
                 items.setText(null);
            }else{
                 
                int[] juego = control.generarJuego(numeroItems);
-               cargarJuego(juego); 
+           
+               
+                for (int i = 2; i < juego.length; i++) {
+                    
+                    int fila = (int) Math.floor((juego[i]/6));
+                    int col = juego[i]-6*fila;
+                    ArrayList<Integer> aux = new ArrayList<>();
+                    aux.add(fila);
+                    aux.add(col);
+                    posicionesManzana.add(aux);
+                    
+                }
+                
+                for (int i = 0; i < 2; i++) {
+                    
+                    int fila = (int) Math.floor((juego[i]/6));
+                    int col = juego[i]-6*fila;
+                    ArrayList<Integer> aux = new ArrayList<>();
+                    aux.add(fila);
+                    aux.add(col);
+                    posicionesCaballos.add(aux);
+                    
+                }
+                
+                
+                System.out.println(posicionesManzana);
+                System.out.println(posicionesCaballos);
+                cargarJuego(juego); 
            }
-        } catch (Exception e) {
+        } catch (HeadlessException | NumberFormatException e) {
             System.out.println(e);
             JOptionPane.showMessageDialog(null,"Ingrese un número","Error", JOptionPane.ERROR_MESSAGE);
             items.setText(null);
@@ -174,12 +202,14 @@ public class Principal extends javax.swing.JFrame {
         URL urlCaballoBlanco = this.getClass().getResource(auxCaballoBlanco);
         ImageIcon iconAux = new ImageIcon(urlCaballoBlanco);
         JButton blanco = new JButton();
+        blanco.setPreferredSize(new Dimension(50, 50));
         blanco.setIcon(iconAux);
         
-        String auxCaballoNegro = "/img/0.png";
+        String auxCaballoNegro = "/img/1.png";
         URL urlCaballoNegro = this.getClass().getResource(auxCaballoNegro);
         ImageIcon iconNegro = new ImageIcon(urlCaballoNegro);
         JButton negro = new JButton();
+        negro.setPreferredSize(new Dimension(50, 50));
         negro.setIcon(iconNegro);
         
         tablero.remove(juego[0]);
@@ -187,16 +217,27 @@ public class Principal extends javax.swing.JFrame {
         tablero.remove(juego[1]);
         tablero.add(negro,juego[1]);
         
+        
         String manzana = "/img/manzana.png";
         URL urlManzana = this.getClass().getResource(manzana);
         ImageIcon iconManzana = new ImageIcon(urlManzana);
-        JButton botonManzana = new JButton();
-        botonManzana.setIcon(iconManzana);
+        
+        
+        this.paintAll(this.getGraphics());
         
         for (int i = 2; i < juego.length; i++) {
+            System.out.println(juego[i]);
+            JButton botonManzana = new JButton();
+            botonManzana.setPreferredSize(new Dimension(50, 50));
+            botonManzana.setIcon(iconManzana);
+            
             tablero.remove(juego[i]);
             tablero.add(botonManzana, juego[i]);
         }
+        
+        
+        this.paintAll(this.getGraphics());
+        
         
         
         

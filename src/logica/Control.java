@@ -5,6 +5,7 @@
  */
 package logica;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -13,7 +14,9 @@ import java.util.Random;
  */
 public class Control {
     
+    public ArrayList<ArrayList<Integer>> posibilidades(int x, int y) {
     
+}
     
     public int[] generarJuego(int cantidadItems){
         final int[] juego = new Random().ints(0, 36).distinct().limit((cantidadItems+2)).toArray();
