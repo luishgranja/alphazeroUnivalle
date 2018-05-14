@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import logica.Control;
 
@@ -23,9 +22,7 @@ import logica.Control;
  */
 public class Principal extends javax.swing.JFrame {
     
-    
-    ArrayList<ArrayList<Integer>> posicionesManzana;
-    ArrayList<ArrayList<Integer>> posicionesCaballos;
+    Control controlador;
     
     
     /**
@@ -36,8 +33,8 @@ public class Principal extends javax.swing.JFrame {
         setResizable(false);
         this.setTitle("ALPHAZERO");
         this.setLocationRelativeTo(null);
-        posicionesManzana = new ArrayList<>();
-        posicionesCaballos = new ArrayList<>();
+        
+        controlador = new Control();
         cargarTablero();
     }
 
@@ -141,10 +138,7 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jugarActionPerformed
-        // TODO add your handling code here:
-        
-        Control control = new Control();
-        
+        // TODO add your handling code here:       
         try {
             int numeroItems = Integer.parseInt(items.getText());
             
@@ -155,36 +149,17 @@ public class Principal extends javax.swing.JFrame {
            else if ((numeroItems % 2) == 0) {
                 JOptionPane.showMessageDialog(null,"Ingrese un número impar Ej: "+ (numeroItems-1),"Error", JOptionPane.WARNING_MESSAGE);
                 items.setText(null);
-           }else{
-                
-               int[] juego = control.generarJuego(numeroItems);
-           
-               
+           }
+           else{
+               int[] juego = controlador.generarJuego(numeroItems);
+               controlador.setCaballoMaquina(juego[0]);
+               controlador.setCaballoOponente(juego[1]);
+               ArrayList <Integer> manzanas = new ArrayList<>();
                 for (int i = 2; i < juego.length; i++) {
-                    
-                    int fila = (int) Math.floor((juego[i]/6));
-                    int col = juego[i]-6*fila;
-                    ArrayList<Integer> aux = new ArrayList<>();
-                    aux.add(fila);
-                    aux.add(col);
-                    posicionesManzana.add(aux);
-                    
+                   manzanas.add(juego[i]);
                 }
-                
-                for (int i = 0; i < 2; i++) {
-                    
-                    int fila = (int) Math.floor((juego[i]/6));
-                    int col = juego[i]-6*fila;
-                    ArrayList<Integer> aux = new ArrayList<>();
-                    aux.add(fila);
-                    aux.add(col);
-                    posicionesCaballos.add(aux);
-                    
-                }
-                
-                
-                System.out.println(posicionesManzana);
-                System.out.println(posicionesCaballos);
+                controlador.setManzanas(manzanas);
+
                 cargarJuego(juego); 
            }
         } catch (HeadlessException | NumberFormatException e) {
@@ -192,10 +167,9 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Ingrese un número","Error", JOptionPane.ERROR_MESSAGE);
             items.setText(null);
         }
-        
-
     }//GEN-LAST:event_jugarActionPerformed
 
+    
     public void cargarJuego(int[] juego){
        
         String auxCaballoBlanco = "/img/0.png";
