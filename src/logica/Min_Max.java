@@ -5,9 +5,7 @@
  */
 package logica;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  *
@@ -16,7 +14,7 @@ import java.util.Queue;
 public class Min_Max {
 
     ArrayList<Integer>[] totalPosibilidades;
-    Queue<Nodo> arbol;
+    Stack <Nodo> arbol;
     int manzanasDisp;
     ArrayList<Integer> posManzanas;
     ArrayList<Nodo> soluciones;
@@ -27,15 +25,32 @@ public class Min_Max {
        for(int i = 0; i < totalPosibilidades.length; i++) {
             totalPosibilidades[i] = new ArrayList<>();
         }
-       arbol = new LinkedList<>();
+       
+       arbol = new Stack<Nodo>();
        manzanasDisp = 0;
        posManzanas = new ArrayList<>();
        soluciones = new ArrayList<>();
     }
 
-    public Boolean casillaOcupada(int pos, int maquina, int oponente) {
-        return pos!=maquina && pos!=oponente;
+    public Boolean validarCasillaMaquina(int pos, int maquina, int oponente, Nodo padre) {
+      if(padre.getPadre()!=null){
+          if(padre.getPadre().getPadre()!=null){
+              return pos!=maquina && pos!=oponente && padre.getPadre().getPadre().getPosMaquina()!=pos;
+          }else
+              return pos!=maquina && pos!=oponente;
+      }else
+          return pos!=maquina && pos!=oponente;
     }
+    
+    public Boolean validarCasillaOponente(int pos, int maquina, int oponente, Nodo padre) {
+      if(padre.getPadre()!=null){
+          if(padre.getPadre().getPadre()!=null){
+              return pos!=maquina && pos!=oponente && padre.getPadre().getPadre().getPosJugador()!=pos;
+          }else
+              return pos!=maquina && pos!=oponente;
+      }else
+          return pos!=maquina && pos!=oponente;
+    }    
     
     //Calcula siguiente moviento a partir de las soluciones hojas
     public int calcMINIMAX(){
@@ -44,55 +59,59 @@ public class Min_Max {
     }
     
     public void miniMax(int maquina, int jugador){
-        ArrayList<Integer> posibles;
-            if(arbol.element().getTurno()%2==0){
-                posibles = posibilidades(maquina);
-                for(int i=0; i<posibles.size(); i++){
-                    
-                    if(casillaOcupada(posibles.get(i),maquina, jugador)){  //si no está ocupada
-                       int estado = 0;
-                       int manz1 = arbol.element().getManzanas();
-                       if(posManzanas.contains(posibles.get(i))){
-                           posManzanas.indexOf(posibles.get(i));
-                         manz1--;
-                         estado = 1;
-                      }    
-                      	Nodo aux = new Nodo(arbol.element(), posibles.get(i), jugador,estado, manz1,1);
-                        arbol.add(aux);
-                   }       
-                }
-                arbol.remove();
-                if(arbol.element().getManzanas()>0)
-                	miniMax(arbol.element().posMaquina, jugador); 
-                else{
-                    soluciones.add(arbol.element());
-                    arbol.remove();
-                    miniMax(arbol.element().posMaquina, jugador); 
-                }
+        int maq = maquina;
+        int jug = jugador;
+        while(!arbol.isEmpty()){
+            Nodo nodo = arbol.peek();
+            if(nodo.getManzanas()>0){
+                ArrayList<Integer> posibles;          
+                if(nodo.getTurno()%2==0){
+                     posibles = getMovimientos(maq);
+                     for(int i=0; i<posibles.size(); i++){  
+                         if(validarCasillaMaquina(posibles.get(i),maq, jug, nodo)){  //si no está ocupada
+                            int estado = 0;
+                            int manz1 = nodo.getManzanas();
+                            if(posManzanas.contains(posibles.get(i))){
+                                posManzanas.indexOf(posibles.get(i));
+                                manz1--;
+                                estado = 1;
+                           }    
+                           Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1);
+                           arbol.push(aux);
+                           //System.out.println("Turno: "+arbol.element().getTurno()+" pos maquina0: "+arbol.element().getPosMaquina());
+                        }       
+                     } 
+                     arbol.pop();
+                     Nodo nuevo = arbol.peek();
+                     maq = nuevo.getPosMaquina();
+                 }
+                 else if(nodo.getTurno()%2!=0){
+                     posibles = getMovimientos(jug);
+                     for(int i=0; i<posibles.size(); i++){
+                         if(validarCasillaOponente(posibles.get(i),maq, jug, nodo)){  //si no está ocupada
+                            int estado = 0;
+                            int manz1 = nodo.getManzanas();
+                            if(posManzanas.contains(posibles.get(i))){
+                                 estado = -1;
+                                 manz1--; 
+                            }    
+                             Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2);
+                             arbol.push(aux);
+                        }       
+                     }
+                    arbol.pop();
+                    Nodo nuevo = arbol.peek();
+                    jug = nuevo.getPosJugador(); 
+                 }  
             }
-            else if(arbol.element().getTurno()%2!=0){
-                posibles = posibilidades(jugador);
-                for(int i=0; i<posibles.size(); i++){
-                    if(casillaOcupada(posibles.get(i),maquina, jugador)){  //si no está ocupada
-                       int estado = 0;
-                       int manz1 = arbol.element().getManzanas();
-                       if(posManzanas.contains(posibles.get(i))){
-                            estado = -1;
-                            manz1--; 
-                       }    
-                        Nodo aux = new Nodo(arbol.element(), maquina, posibles.get(i), estado,manz1, 2);
-                        arbol.add(aux);
-                   }       
-                }
-                arbol.remove();
-              	if(arbol.element().getManzanas()>0)
-                	miniMax(maquina,arbol.element().posJugador); 
-               else{
-                    soluciones.add(arbol.element());
-                    arbol.remove();
-                    miniMax(maquina,arbol.element().posJugador); 
-                }
-            }
+            else{
+                soluciones.add(nodo);
+                arbol.pop();
+                System.out.println("Turno: ");
+            }            
+          
+            
+        }
     }
     
    public int crearRaiz(int maquina, int jugador, int manz){
@@ -120,40 +139,40 @@ public class Min_Max {
                 aux = (y+1)+6*(x-2);
                 res.add(aux);        
             }
-            else if ((y-1) >= 0 && (y-1) <= 5) {
+            if ((y-1) >= 0 && (y-1) <= 5) {
                aux = (y-1)+6*(x-2);
                res.add(aux);
             }
         }
         //movimiento 2 abajo y 1izq o 1 der
-        else if ((x+2) >= 0 && (x+2) <= 5) {      
+        if ((x+2) >= 0 && (x+2) <= 5) {      
             if ((y+1) >= 0 && (y+1) <= 5 ) {       
                 aux = (y+1)+6*(x+2);
                 res.add(aux);             
             }
-            else if ((y-1) >= 0 && (y-1) <= 5) {
+            if ((y-1) >= 0 && (y-1) <= 5) {
                 aux = (y-1)+6*(x+2);
                 res.add(aux);
             }
         }
         //Movimiento 1 arriba y 2 derecha o 2 izq 
-        else if ((x-1) >= 0 && (x-1) <= 5) {
+        if ((x-1) >= 0 && (x-1) <= 5) {
             if ((y-2) >= 0 && (y-2) <= 5 ) {
                 aux = (y-2)+6*(x-1);
                 res.add(aux);
             }
-            else if ((y+2)>= 0 && (y+2) <= 5) {  
+            if ((y+2)>= 0 && (y+2) <= 5) {  
                 aux = (y+2)+6*(x-1);
                 res.add(aux);
             }
         }
         //Movimiento 1 abajo y 2 der o 2 izq
-        else if ((x+1) >= 0 && (x+1) <= 5) {
+       if ((x+1) >= 0 && (x+1) <= 5) {
             if ((y-2) >= 0 && (y-2) <= 5 ) { 
                 aux = (y-2)+6*(x+1);
                 res.add(aux);   
             }
-            else if ((y+2) >= 0 && (y+2) <= 5) {
+            if ((y+2) >= 0 && (y+2) <= 5) {
                 aux = (y+2)+6*(x+1);
                 res.add(aux);
             }

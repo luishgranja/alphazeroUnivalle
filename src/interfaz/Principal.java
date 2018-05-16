@@ -151,19 +151,23 @@ public class Principal extends javax.swing.JFrame {
                 items.setText(null);
            }
            else{
-               int[] juego = controlador.generarJuego(numeroItems);
-               controlador.setCaballoMaquina(juego[0]);
-               controlador.setCaballoOponente(juego[1]);
+               int[] juego = controlador.generarJuego(2);
+               controlador.setCaballoMaquina(0);
+               controlador.setCaballoOponente(20);
                ArrayList <Integer> manzanas = new ArrayList<>();
                 for (int i = 2; i < juego.length; i++) {
                    manzanas.add(juego[i]);
                 }
-                controlador.setManzanas(manzanas);
-
-                cargarJuego(juego); 
+                ArrayList <Integer> x = new ArrayList<>();
+                x.add(8);
+                x.add(13);
+                controlador.setManzanas(x);
+                int[] z = {0,20,8,13};
+                cargarJuego(z); 
+                controlador.moverMaquina();
            }
         } catch (HeadlessException | NumberFormatException e) {
-            System.out.println(e);
+            //System.out.println(e);
             JOptionPane.showMessageDialog(null,"Ingrese un número","Error", JOptionPane.ERROR_MESSAGE);
             items.setText(null);
         }
@@ -200,7 +204,7 @@ public class Principal extends javax.swing.JFrame {
         this.paintAll(this.getGraphics());
         
         for (int i = 2; i < juego.length; i++) {
-            System.out.println(juego[i]);
+            //System.out.println(juego[i]);
             JButton botonManzana = new JButton();
             botonManzana.setPreferredSize(new Dimension(50, 50));
             botonManzana.setIcon(iconManzana);

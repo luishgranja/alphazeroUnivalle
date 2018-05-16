@@ -25,6 +25,7 @@ public class Control {
         caballoMaquina = 0;
         caballoOponente = 0;
         manzanas = new ArrayList<>();
+        minimax.calcularTotalPosibilidades();
     }
         
     //Asigna aleatoriamente las posiciones de los items dentro del tablero.
