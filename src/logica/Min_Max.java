@@ -56,6 +56,7 @@ public class Min_Max {
     //Calcula siguiente moviento a partir de las soluciones hojas
     public int calcMINIMAX(){
         int res = 0;
+        
         return res; 
     }
     
@@ -66,7 +67,7 @@ public class Min_Max {
             Nodo nodo = arbol.peek();
           	maq = nodo.getPosMaquina();
           	jug = nodo.getPosJugador();
-            if(nodo.getManzanas()>0){
+            if(nodo.getManzanas()>0 && nodo.getProfundidad()<=8){
                 ArrayList<Integer> posibles;          
                 if(nodo.getTurno()%2==0){
                      posibles = getMovimientos(maq);
@@ -78,7 +79,7 @@ public class Min_Max {
                                 manz1--;
                                 estado = 1;
                            }    
-                           Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1);
+                           Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1,nodo.getProfundidad()+1);
                            arbol.add(aux);
                         }       
                      } 
@@ -94,7 +95,7 @@ public class Min_Max {
                                  estado = -1;
                                  manz1--; 
                             }    
-                             Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2);
+                             Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2, nodo.getProfundidad()+1);
                              arbol.add(aux);
                         }       
                      }
@@ -108,17 +109,17 @@ public class Min_Max {
               	if(nodo.getTurno()==2){
                   int pj = nodo.getPosJugador();
                   System.out.println("La posición del jugador es: "+pj);
-                  System.out.println("manzanas: "+pj);
                 }else{
                   int pm = nodo.getPosMaquina();
                   System.out.println("La posición de la maquina es es: "+pm);
                 }
             }            
         }
+        System.out.println("Tam Soluciones "+soluciones.size());
     }
     
    public int crearRaiz(int maquina, int jugador, int manz){
-        Nodo raiz = new Nodo(null, maquina, jugador, 0,manzanasDisp, 0);
+        Nodo raiz = new Nodo(null, maquina, jugador, 0,manzanasDisp, 0,0);
         arbol.add(raiz);
         miniMax(maquina,jugador);
        int resultado = calcMINIMAX();
