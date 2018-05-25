@@ -6,7 +6,8 @@
 package logica;
 
 import java.util.*;
-
+import java.util.LinkedList;
+import java.util.Queue;
 /**
  *
  * @author ennuikibun
@@ -14,7 +15,7 @@ import java.util.*;
 public class Min_Max {
 
     ArrayList<Integer>[] totalPosibilidades;
-    Stack <Nodo> arbol;
+    Queue<Nodo> arbol;
     int manzanasDisp;
     ArrayList<Integer> posManzanas;
     ArrayList<Nodo> soluciones;
@@ -26,7 +27,7 @@ public class Min_Max {
             totalPosibilidades[i] = new ArrayList<>();
         }
        
-       arbol = new Stack<Nodo>();
+       arbol = new LinkedList<>();
        manzanasDisp = 0;
        posManzanas = new ArrayList<>();
        soluciones = new ArrayList<>();
@@ -63,6 +64,8 @@ public class Min_Max {
         int jug = jugador;
         while(!arbol.isEmpty()){
             Nodo nodo = arbol.peek();
+          	maq = nodo.getPosMaquina();
+          	jug = nodo.getPosJugador();
             if(nodo.getManzanas()>0){
                 ArrayList<Integer> posibles;          
                 if(nodo.getTurno()%2==0){
@@ -71,19 +74,15 @@ public class Min_Max {
                          if(validarCasillaMaquina(posibles.get(i),maq, jug, nodo)){  //si no está ocupada
                             int estado = 0;
                             int manz1 = nodo.getManzanas();
-                            if(posManzanas.contains(posibles.get(i))){
-                                posManzanas.indexOf(posibles.get(i));
+                            if(posManzanas.contains(posibles.get(i))){ 
                                 manz1--;
                                 estado = 1;
                            }    
                            Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1);
-                           arbol.push(aux);
-                           //System.out.println("Turno: "+arbol.element().getTurno()+" pos maquina0: "+arbol.element().getPosMaquina());
+                           arbol.add(aux);
                         }       
                      } 
-                     arbol.pop();
-                     Nodo nuevo = arbol.peek();
-                     maq = nuevo.getPosMaquina();
+                     arbol.poll();
                  }
                  else if(nodo.getTurno()%2!=0){
                      posibles = getMovimientos(jug);
@@ -96,21 +95,25 @@ public class Min_Max {
                                  manz1--; 
                             }    
                              Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2);
-                             arbol.push(aux);
+                             arbol.add(aux);
                         }       
                      }
-                    arbol.pop();
-                    Nodo nuevo = arbol.peek();
-                    jug = nuevo.getPosJugador(); 
+                    arbol.poll(); 
                  }  
             }
             else{
                 soluciones.add(nodo);
-                arbol.pop();
-                System.out.println("Turno: ");
+                arbol.poll();
+                System.out.println("agregó solución");
+              	if(nodo.getTurno()==2){
+                  int pj = nodo.getPosJugador();
+                  System.out.println("La posición del jugador es: "+pj);
+                  System.out.println("manzanas: "+pj);
+                }else{
+                  int pm = nodo.getPosMaquina();
+                  System.out.println("La posición de la maquina es es: "+pm);
+                }
             }            
-          
-            
         }
     }
     
