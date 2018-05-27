@@ -56,6 +56,34 @@ public class Min_Max {
     //Calcula siguiente moviento a partir de las soluciones hojas
     public int calcMINIMAX(){
         int res = 0;
+        int mayor=soluciones.get(0).getProfundidad();
+        for(int i=1;i<soluciones.size();i++){
+            if(soluciones.get(i).getProfundidad()>mayor)
+                mayor=soluciones.get(i).getProfundidad();
+        }
+        ArrayList<Nodo>aux = new ArrayList<>();
+        for(int i=0;i<soluciones.size();i++){
+            if(soluciones.get(i).getProfundidad()==mayor)
+                aux.add(soluciones.get(i));
+        }
+        ArrayList<Nodo>hrnos = new ArrayList<>();
+        while(aux.size()>0){
+            hrnos.clear();
+            Nodo aux2 = aux.get(0);
+            aux.remove(0);
+            for(int i=0;i<aux.size();i++){
+                if(aux.get(i).getPadre()==aux2.getPadre()){
+                    hrnos.add(aux.get(i));
+                    aux.remove(i);
+                    i--;
+                }               
+            }
+            for (Nodo hrno : hrnos) {
+                
+            }
+        }
+        
+        
         
         return res; 
     }
@@ -79,7 +107,7 @@ public class Min_Max {
                                 manz1--;
                                 estado = 1;
                            }    
-                           Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1,nodo.getProfundidad()+1);
+                           Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1,nodo.getProfundidad()+1,nodo.getUtilidad()+1);
                            arbol.add(aux);
                         }       
                      } 
@@ -95,7 +123,7 @@ public class Min_Max {
                                  estado = -1;
                                  manz1--; 
                             }    
-                             Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2, nodo.getProfundidad()+1);
+                             Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2, nodo.getProfundidad()+1,nodo.getUtilidad()-1);
                              arbol.add(aux);
                         }       
                      }
@@ -103,6 +131,12 @@ public class Min_Max {
                  }  
             }
             else{
+                if(nodo.getProfundidad()<8){
+                    if(nodo.getTurno()==1)
+                        nodo.setUtilidad(1);
+                    else
+                        nodo.setUtilidad(-1);
+                }
                 soluciones.add(nodo);
                 arbol.poll();
                 System.out.println("agregó solución");
@@ -119,7 +153,7 @@ public class Min_Max {
     }
     
    public int crearRaiz(int maquina, int jugador, int manz){
-        Nodo raiz = new Nodo(null, maquina, jugador, 0,manzanasDisp, 0,0);
+        Nodo raiz = new Nodo(null, maquina, jugador, 0,manzanasDisp, 0,0,0);
         arbol.add(raiz);
         miniMax(maquina,jugador);
        int resultado = calcMINIMAX();

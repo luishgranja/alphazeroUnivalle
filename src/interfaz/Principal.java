@@ -8,12 +8,14 @@ package interfaz;
 import static java.awt.Color.*;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import logica.Control;
+import logica.*;
 
 
 /**
@@ -23,6 +25,7 @@ import logica.Control;
 public class Principal extends javax.swing.JFrame {
     
     Control controlador;
+    Min_Max minimax;
     
     
     /**
@@ -34,8 +37,15 @@ public class Principal extends javax.swing.JFrame {
         this.setTitle("ALPHAZERO");
         this.setLocationRelativeTo(null);
         
+        //agrega el banner
+        String path = "/img/AI.png";
+        URL url = this.getClass().getResource(path);
+        ImageIcon icon = new ImageIcon(url);
+        banner.setIcon(icon);
+        
         controlador = new Control();
         cargarTablero();
+        
     }
 
     /**
@@ -49,6 +59,7 @@ public class Principal extends javax.swing.JFrame {
 
         tablero = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        banner = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         items = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -62,11 +73,11 @@ public class Principal extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 426, Short.MAX_VALUE)
+            .addComponent(banner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 59, Short.MAX_VALUE)
+            .addComponent(banner, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
         );
 
         jLabel1.setText("# de Items");
@@ -113,20 +124,19 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tablero, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addGap(0, 8, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(tablero, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -158,13 +168,10 @@ public class Principal extends javax.swing.JFrame {
                 for (int i = 2; i < juego.length; i++) {
                    manzanas.add(juego[i]);
                 }
-                ArrayList <Integer> x = new ArrayList<>();
-                x.add(8);
-                x.add(13);
-                controlador.setManzanas(x);
-                int[] z = {0,20,8,13};
-                cargarJuego(z); 
+                
+                cargarJuego(juego); 
                 controlador.moverMaquina();
+                habilitarBotones(30);
            }
         } catch (HeadlessException | NumberFormatException e) {
             //System.out.println(e);
@@ -216,10 +223,18 @@ public class Principal extends javax.swing.JFrame {
         
         this.paintAll(this.getGraphics());
         
-        
-        
-        
     }
+    
+public void habilitarBotones(int pos){
+    ArrayList<Integer> posibles = new ArrayList<>();
+    posibles.add(20);
+    posibles.add(31);
+    for (int i = 0; i < 36; i++) {
+        if (posibles.contains(i)) {
+            tablero.getComponent(i).setEnabled(true);
+        }
+    }
+}
     
 public void cargarTablero(){
     
@@ -229,16 +244,24 @@ public void cargarTablero(){
             
             JButton auxBoton = new JButton();
             auxBoton.setPreferredSize( new Dimension (50,50));
+            auxBoton.setEnabled(false);
 
             if ((((i+j) % 2) == 0))
                 auxBoton.setBackground(WHITE);
             else
                 auxBoton.setBackground(BLACK);
             tablero.add(auxBoton);
+            auxBoton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    
+                }
+            });
         }
     }   
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel banner;
     private javax.swing.JTextField items;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;

@@ -11,6 +11,7 @@ public class Nodo {
         int manzanas;
         int turno;
         int profundidad;
+        int utilidad;
   
 public Nodo(){
       padre = null;
@@ -20,9 +21,10 @@ public Nodo(){
       turno = 0;
       manzanas = 0;
       profundidad = 0;
+      utilidad = 0;
      }
   
-    public Nodo( Nodo pPadre, int pPosMaquina, int pPosJugador, int pEstado, int pManzanas, int pTurno, int pProfundidad){
+    public Nodo( Nodo pPadre, int pPosMaquina, int pPosJugador, int pEstado, int pManzanas, int pTurno, int pProfundidad, int pUtilidad){
       padre = pPadre;
       posMaquina = pPosMaquina;
       posJugador = pPosJugador;
@@ -30,6 +32,7 @@ public Nodo(){
       manzanas = pManzanas; 
       turno = pTurno;
       profundidad = pProfundidad;
+      utilidad = pUtilidad;
     }
 
     public void setPadre(Nodo padre) {
@@ -86,6 +89,14 @@ public Nodo(){
 
     public void setProfundidad(int profundidad) {
         this.profundidad = profundidad;
+    }
+
+    public int getUtilidad() {
+        return utilidad;
+    }
+
+    public void setUtilidad(int utilidad) {
+        this.utilidad = utilidad;
     }
     
     
