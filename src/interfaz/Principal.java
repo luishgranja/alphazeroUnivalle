@@ -26,6 +26,15 @@ public class Principal extends javax.swing.JFrame {
     
     Control controlador;
     Min_Max minimax;
+    int[] juego;
+    String auxCaballoBlanco;
+    URL urlCaballoBlanco;
+    ImageIcon iconAux;
+    JButton blanco;
+    String auxCaballoNegro;
+    URL urlCaballoNegro;
+    ImageIcon iconNegro;
+    JButton negro;
     
     
     /**
@@ -43,7 +52,24 @@ public class Principal extends javax.swing.JFrame {
         ImageIcon icon = new ImageIcon(url);
         banner.setIcon(icon);
         
+        //definicion de variables para las imagenes de los caballos
+        String auxCaballoBlanco = "/img/0.png";
+        URL urlCaballoBlanco = this.getClass().getResource(auxCaballoBlanco);
+        ImageIcon iconAux = new ImageIcon(urlCaballoBlanco);
+        JButton blanco = new JButton();
+        blanco.setPreferredSize(new Dimension(50, 50));
+        blanco.setIcon(iconAux);
+        
+        String auxCaballoNegro = "/img/1.png";
+        URL urlCaballoNegro = this.getClass().getResource(auxCaballoNegro);
+        ImageIcon iconNegro = new ImageIcon(urlCaballoNegro);
+        JButton negro = new JButton();
+        negro.setPreferredSize(new Dimension(50, 50));
+        negro.setIcon(iconNegro);
+        
         controlador = new Control();
+        minimax = new Min_Max();
+        minimax.calcularTotalPosibilidades();
         cargarTablero();
         
     }
@@ -161,9 +187,9 @@ public class Principal extends javax.swing.JFrame {
                 items.setText(null);
            }
            else{
-               int[] juego = controlador.generarJuego(2);
-               controlador.setCaballoMaquina(0);
-               controlador.setCaballoOponente(20);
+               juego = controlador.generarJuego(numeroItems);
+               controlador.setCaballoMaquina(juego[0]);
+               controlador.setCaballoOponente(juego[1]);
                ArrayList <Integer> manzanas = new ArrayList<>();
                 for (int i = 2; i < juego.length; i++) {
                    manzanas.add(juego[i]);
@@ -172,6 +198,7 @@ public class Principal extends javax.swing.JFrame {
                 cargarJuego(juego); 
                 controlador.moverMaquina();
                 habilitarBotones(30);
+                jugar.setEnabled(false);
            }
         } catch (HeadlessException | NumberFormatException e) {
             //System.out.println(e);
@@ -180,22 +207,63 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jugarActionPerformed
 
+    public void juegoMaquina(int pos, int posActual){
+        
+        
+        switch (posActual-pos) {
+            //dos arriba uno derecha
+            case -11:
+                tablero.remove(posActual);
+                this.repaint();
+                tablero.add(blanco, posActual-6);
+                tablero.remove(posActual-6);
+                                try{
+                    Thread.sleep(500);
+                } catch (Exception e) {}      
+                this.paintAll(this.getGraphics());
+                tablero.add(blanco,posActual-6);
+                
+                break;
+                
+            //uno arriba - dos a la derecha
+            case -4:
+                break; 
+                
+            //uno abajo - dos a la derecha
+            case 8:
+                break;
+                
+            // 2 abajo - 1 derecha   
+            case 13:
+                break;
+                
+            //2 abajo - 1 izquierda    
+            case 11:
+                break;
+            
+            //1 abajo - 2 izquierda
+            case 4:
+                break;
+                
+            //1 arriba - 2 izquierda
+            case -8:
+                break;
+                
+            //2 arriba - 1 izquierda
+            case -13:
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    public void initJuego(){
+        
+    }
+    
     
     public void cargarJuego(int[] juego){
-       
-        String auxCaballoBlanco = "/img/0.png";
-        URL urlCaballoBlanco = this.getClass().getResource(auxCaballoBlanco);
-        ImageIcon iconAux = new ImageIcon(urlCaballoBlanco);
-        JButton blanco = new JButton();
-        blanco.setPreferredSize(new Dimension(50, 50));
-        blanco.setIcon(iconAux);
-        
-        String auxCaballoNegro = "/img/1.png";
-        URL urlCaballoNegro = this.getClass().getResource(auxCaballoNegro);
-        ImageIcon iconNegro = new ImageIcon(urlCaballoNegro);
-        JButton negro = new JButton();
-        negro.setPreferredSize(new Dimension(50, 50));
-        negro.setIcon(iconNegro);
         
         tablero.remove(juego[0]);
         tablero.add(blanco, juego[0]);
@@ -211,7 +279,6 @@ public class Principal extends javax.swing.JFrame {
         this.paintAll(this.getGraphics());
         
         for (int i = 2; i < juego.length; i++) {
-            //System.out.println(juego[i]);
             JButton botonManzana = new JButton();
             botonManzana.setPreferredSize(new Dimension(50, 50));
             botonManzana.setIcon(iconManzana);
@@ -226,11 +293,10 @@ public class Principal extends javax.swing.JFrame {
     }
     
 public void habilitarBotones(int pos){
-    ArrayList<Integer> posibles = new ArrayList<>();
-    posibles.add(20);
-    posibles.add(31);
+    ArrayList<Integer> posibles = minimax.getMovimientos(juego[1]);
     for (int i = 0; i < 36; i++) {
         if (posibles.contains(i)) {
+            tablero.getComponent(i).setBackground(LIGHT_GRAY);
             tablero.getComponent(i).setEnabled(true);
         }
     }
