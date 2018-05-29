@@ -26,7 +26,6 @@ public class Principal extends javax.swing.JFrame {
     
     Control controlador;
     Min_Max minimax;
-    int[] juego;
     String auxCaballoBlanco;
     URL urlCaballoBlanco;
     ImageIcon iconAux;
@@ -52,20 +51,7 @@ public class Principal extends javax.swing.JFrame {
         ImageIcon icon = new ImageIcon(url);
         banner.setIcon(icon);
         
-        //definicion de variables para las imagenes de los caballos
-        String auxCaballoBlanco = "/img/0.png";
-        URL urlCaballoBlanco = this.getClass().getResource(auxCaballoBlanco);
-        ImageIcon iconAux = new ImageIcon(urlCaballoBlanco);
-        JButton blanco = new JButton();
-        blanco.setPreferredSize(new Dimension(50, 50));
-        blanco.setIcon(iconAux);
-        
-        String auxCaballoNegro = "/img/1.png";
-        URL urlCaballoNegro = this.getClass().getResource(auxCaballoNegro);
-        ImageIcon iconNegro = new ImageIcon(urlCaballoNegro);
-        JButton negro = new JButton();
-        negro.setPreferredSize(new Dimension(50, 50));
-        negro.setIcon(iconNegro);
+      
         
         controlador = new Control();
         minimax = new Min_Max();
@@ -187,17 +173,21 @@ public class Principal extends javax.swing.JFrame {
                 items.setText(null);
            }
            else{
-               juego = controlador.generarJuego(numeroItems);
-               controlador.setCaballoMaquina(juego[0]);
+               int[] juego = controlador.generarJuego(numeroItems);
+               controlador.setCaballoMaquina(0);
                controlador.setCaballoOponente(juego[1]);
                ArrayList <Integer> manzanas = new ArrayList<>();
                 for (int i = 2; i < juego.length; i++) {
                    manzanas.add(juego[i]);
                 }
-                
-                cargarJuego(juego); 
-                controlador.moverMaquina();
-                habilitarBotones(30);
+                ArrayList <Integer> x = new ArrayList<>();
+                x.add(8);
+                controlador.setManzanas(x);
+                int[] z = {0,juego[1],8};
+                cargarJuego(z); 
+                int movimientoMaquina = controlador.moverMaquina();
+                System.out.println("La maquina se debe mover a: "+movimientoMaquina);
+                //habilitarBotones(30);
                 jugar.setEnabled(false);
            }
         } catch (HeadlessException | NumberFormatException e) {
@@ -265,6 +255,21 @@ public class Principal extends javax.swing.JFrame {
     
     public void cargarJuego(int[] juego){
         
+          //definicion de variables para las imagenes de los caballos
+        String auxCaballoBlanco = "/img/0.png";
+        URL urlCaballoBlanco = this.getClass().getResource(auxCaballoBlanco);
+        ImageIcon iconAux = new ImageIcon(urlCaballoBlanco);
+        JButton blanco = new JButton();
+        blanco.setPreferredSize(new Dimension(50, 50));
+        blanco.setIcon(iconAux);
+        
+        String auxCaballoNegro = "/img/1.png";
+        URL urlCaballoNegro = this.getClass().getResource(auxCaballoNegro);
+        ImageIcon iconNegro = new ImageIcon(urlCaballoNegro);
+        JButton negro = new JButton();
+        negro.setPreferredSize(new Dimension(50, 50));
+        negro.setIcon(iconNegro);
+        
         tablero.remove(juego[0]);
         tablero.add(blanco, juego[0]);
         tablero.remove(juego[1]);
@@ -292,15 +297,15 @@ public class Principal extends javax.swing.JFrame {
         
     }
     
-public void habilitarBotones(int pos){
-    ArrayList<Integer> posibles = minimax.getMovimientos(juego[1]);
-    for (int i = 0; i < 36; i++) {
-        if (posibles.contains(i)) {
-            tablero.getComponent(i).setBackground(LIGHT_GRAY);
-            tablero.getComponent(i).setEnabled(true);
-        }
-    }
-}
+//public void habilitarBotones(int pos){
+//    //ArrayList<Integer> posibles = minimax.getMovimientos(juego[1]);
+//    for (int i = 0; i < 36; i++) {
+//        if (posibles.contains(i)) {
+//            tablero.getComponent(i).setBackground(LIGHT_GRAY);
+//            tablero.getComponent(i).setEnabled(true);
+//        }
+//    }
+//}
     
 public void cargarTablero(){
     
