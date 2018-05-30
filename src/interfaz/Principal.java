@@ -174,17 +174,14 @@ public class Principal extends javax.swing.JFrame {
            }
            else{
                int[] juego = controlador.generarJuego(numeroItems);
-               controlador.setCaballoMaquina(3);
+               controlador.setCaballoMaquina(juego[0]);
                controlador.setCaballoOponente(juego[1]);
                ArrayList <Integer> manzanas = new ArrayList<>();
                 for (int i = 2; i < juego.length; i++) {
                    manzanas.add(juego[i]);
                 }
-                ArrayList <Integer> x = new ArrayList<>();
-                x.add(14);
-                controlador.setManzanas(x);
-                int[] z = {3,juego[1],14};
-                cargarJuego(z); 
+                controlador.setManzanas(manzanas);
+                cargarJuego(juego); 
                 int movimientoMaquina = controlador.moverMaquina();
                 System.out.println("La maquina se debe mover a: "+movimientoMaquina);
                 //habilitarBotones(30);

@@ -14,7 +14,6 @@ public class Min_Max {
 
     ArrayList<Integer>[] totalPosibilidades;
     ArrayList<Nodo> arbol;
-    int manzanasDisp;
     ArrayList<Integer> posManzanas;
     ArrayList<Nodo> soluciones;
     int resultado;
@@ -27,7 +26,6 @@ public class Min_Max {
         }
 
         arbol = new ArrayList<>();
-        manzanasDisp = 0;
         posManzanas = new ArrayList<>();
         soluciones = new ArrayList<>();
         resultado=0;
@@ -63,15 +61,22 @@ public class Min_Max {
                     break;
                 case 1:
                     if(miNodo.getEstado()==false)
-                        miNodo.setUtilidad(1);
+                        miNodo.setUtilidad(10-miNodo.getProfundidad());
                     if(arbol.get(miNodo.getPadre()).getEstado()==false){
                         arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
                         arbol.get(miNodo.getPadre()).setSucesor(pos);
                         arbol.get(miNodo.getPadre()).setEstado(true);
                     }else{
-                        if(miNodo.getUtilidad()>arbol.get(miNodo.getPadre()).getUtilidad()){
-                            arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
-                            arbol.get(miNodo.getPadre()).setSucesor(pos);
+                        if(miNodo.getPadre()==0){
+                            if(miNodo.getUtilidad()>arbol.get(miNodo.getPadre()).getUtilidad()){
+                                arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
+                                arbol.get(miNodo.getPadre()).setSucesor(pos);
+                            }
+                        }else{
+                            if(miNodo.getUtilidad()<arbol.get(miNodo.getPadre()).getUtilidad()){
+                                arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
+                                arbol.get(miNodo.getPadre()).setSucesor(pos);
+                            }
                         }
                     }  break;
                 case 2:
@@ -82,7 +87,7 @@ public class Min_Max {
                         arbol.get(miNodo.getPadre()).setSucesor(pos);
                         arbol.get(miNodo.getPadre()).setEstado(true);
                     }else{
-                        if(miNodo.getUtilidad()<arbol.get(miNodo.getPadre()).getUtilidad()){
+                        if(miNodo.getUtilidad()>arbol.get(miNodo.getPadre()).getUtilidad()){
                             arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
                             arbol.get(miNodo.getPadre()).setSucesor(pos);
                         }
@@ -133,11 +138,10 @@ public class Min_Max {
     }
 
     public int crearRaiz(int maquina, int jugador, int manz) {
-        int x=manzanasDisp;
-        Nodo raiz = new Nodo(-1, maquina, jugador, false,x, 0,0,0,0);
+       arbol.clear();
+        Nodo raiz = new Nodo(-1, maquina, jugador, false,manz, 0,0,0,0);
         arbol.add(raiz);
         miniMax(raiz,0);
-        arbol.clear();
         return resultado;
     }
 
@@ -208,10 +212,6 @@ public class Min_Max {
 
     public ArrayList<Integer> getMovimientos(int pos) {
         return totalPosibilidades[pos];
-    }
-
-    public void setManzanasDisp(int manzanasDisp) {
-        this.manzanasDisp = manzanasDisp;
     }
 
     public void setPosManzanas(ArrayList<Integer> posManz) {
