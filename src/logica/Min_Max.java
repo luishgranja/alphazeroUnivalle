@@ -6,8 +6,6 @@
 package logica;
 
 import java.util.*;
-import java.util.LinkedList;
-import java.util.Queue;
 /**
  *
  * @author ennuikibun
@@ -15,10 +13,11 @@ import java.util.Queue;
 public class Min_Max {
 
     ArrayList<Integer>[] totalPosibilidades;
-    Queue<Nodo> arbol;
+    ArrayList<Nodo> arbol;
     int manzanasDisp;
     ArrayList<Integer> posManzanas;
     ArrayList<Nodo> soluciones;
+    int resultado;
 
     public Min_Max() {
         totalPosibilidades =  (ArrayList<Integer>[])new ArrayList<?>[36];
@@ -27,16 +26,17 @@ public class Min_Max {
             totalPosibilidades[i] = new ArrayList<>();
         }
 
-        arbol = new LinkedList<>();
+        arbol = new ArrayList<>();
         manzanasDisp = 0;
         posManzanas = new ArrayList<>();
         soluciones = new ArrayList<>();
+        resultado=0;
     }
 
     public Boolean validarCasillaMaquina(int pos, int maquina, int oponente, Nodo padre) {
-        if(padre.getPadre()!=null) {
-            if(padre.getPadre().getPadre()!=null) {
-                return pos!=maquina && pos!=oponente && padre.getPadre().getPadre().getPosMaquina()!=pos;
+        if(padre.getPadre()!=-1) {
+            if(arbol.get(padre.getPadre()).getPadre()!=-1) {
+                return pos!=maquina && pos!=oponente && arbol.get(arbol.get(padre.getPadre()).getPadre()).getPosMaquina()!=pos;
             } else
                 return pos!=maquina && pos!=oponente;
         } else
@@ -44,172 +44,99 @@ public class Min_Max {
     }
 
     public Boolean validarCasillaOponente(int pos, int maquina, int oponente, Nodo padre) {
-        if(padre.getPadre()!=null) {
-            if(padre.getPadre().getPadre()!=null) {
-                return pos!=maquina && pos!=oponente && padre.getPadre().getPadre().getPosJugador()!=pos;
+        if(padre.getPadre()!=-1) {
+            if(arbol.get(padre.getPadre()).getPadre()!=-1) {
+                return pos!=maquina && pos!=oponente && arbol.get(arbol.get(padre.getPadre()).getPadre()).getPosJugador()!=pos;
             } else
                 return pos!=maquina && pos!=oponente;
         } else
             return pos!=maquina && pos!=oponente;
     }
 
-    //Calcula siguiente moviento a partir de las soluciones hojas
-    public int calcMINIMAX() {
-
-        while(!soluciones.isEmpty()) {
-            int res = 0;
-            int mayor = soluciones.get(res).getProfundidad();
-            int pos = 0;
-            for(int i=res+1; i<soluciones.size(); i++) {
-                if(soluciones.get(i).getProfundidad()>mayor) {
-                    mayor = soluciones.get(i).getProfundidad();
-                    pos = i;
-                }
-            }
-
-            soluciones.remove(pos);
-            
-            ArrayList<Nodo>aux = new ArrayList<>();
-            for(int i=0; i<soluciones.size(); i++) {
-                if(soluciones.get(i).getProfundidad()==mayor) {
-                    aux.add(soluciones.get(i));
-                    soluciones.remove(i);
-                    
-                    i--;
-                }
-            }
-
-            ArrayList<Nodo>hrnos = new ArrayList<>();
-            while(aux.size()>0) {
-                hrnos.clear();
-                Nodo aux2 = aux.get(0);
-                hrnos.add(aux2);
-                aux.remove(0);
-                for(int i=0; i<aux.size(); i++) {
-                    if(aux.get(i).getPadre()==aux2.getPadre()) {
-                        hrnos.add(aux.get(i));
-                        aux.remove(i);
-                        i--;
-                    }
-                }
-
-                int turno = hrnos.get(0).getTurno();
-                int utilidad = hrnos.get(0).getUtilidad();
-                int posNodo = 0;
-                //Maximizar
-                if(turno==1) {
-                    for (int i = 0; i < hrnos.size(); i++) {
-                        Nodo hrno = hrnos.get(i);
-                        if(hrno.getUtilidad() > utilidad){
-                            utilidad = hrno.getUtilidad();
-                            posNodo = i;
+    public void miniMax(Nodo miNodo, int pos) {
+        if(miNodo.getManzanas()==0 ||miNodo.getProfundidad()>=8 ){
+           if(miNodo.getProfundidad()>=8)
+               miNodo.setEstado(true);
+            switch (miNodo.getTurno()) {
+                case 0:
+                    resultado=arbol.get(miNodo.getSucesor()).getPosMaquina(); //asigna el siguiente movimiento que debe hacer la máquina.
+                    break;
+                case 1:
+                    if(miNodo.getEstado()==false)
+                        miNodo.setUtilidad(1);
+                    if(arbol.get(miNodo.getPadre()).getEstado()==false){
+                        arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
+                        arbol.get(miNodo.getPadre()).setSucesor(pos);
+                        arbol.get(miNodo.getPadre()).setEstado(true);
+                    }else{
+                        if(miNodo.getUtilidad()>arbol.get(miNodo.getPadre()).getUtilidad()){
+                            arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
+                            arbol.get(miNodo.getPadre()).setSucesor(pos);
                         }
-                    }
-
-                } else if(turno==2){ //minimizar
-                    for (int i = 0; i < hrnos.size(); i++) {
-                        Nodo hrno = hrnos.get(i);
-                        if(hrno.getUtilidad() < utilidad){
-                            utilidad = hrno.getUtilidad();
-                            posNodo = i;
+                    }  break;
+                case 2:
+                    if(miNodo.getEstado()==false)
+                        miNodo.setUtilidad(-1);
+                    if(arbol.get(miNodo.getPadre()).getEstado()==false){
+                        arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
+                        arbol.get(miNodo.getPadre()).setSucesor(pos);
+                        arbol.get(miNodo.getPadre()).setEstado(true);
+                    }else{
+                        if(miNodo.getUtilidad()<arbol.get(miNodo.getPadre()).getUtilidad()){
+                            arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
+                            arbol.get(miNodo.getPadre()).setSucesor(pos);
                         }
-                    }
-                }
-                
-                Nodo padreAux = hrnos.get(0).getPadre();
-                padreAux.setUtilidad(utilidad);
-                
-                if (padreAux.getTurno() == 0) {
-                    return hrnos.get(posNodo).getPosMaquina();
-                }
-                soluciones.add(padreAux);
+                    }   break;
+                default:
+                    break;
             }
         }
-        return 0;
-    }
-
-    public void miniMax(int maquina, int jugador) {
-        int maq = maquina;
-        int jug = jugador;
-        while(!arbol.isEmpty()) {
-            Nodo nodo = arbol.peek();
-            maq = nodo.getPosMaquina();
-            jug = nodo.getPosJugador();
-            if(nodo.getProfundidad()<8) {
-                ArrayList<Integer> posibles;
-                if(nodo.getTurno()%2==0) {
-                    posibles = getMovimientos(maq);
-                    System.out.println("posibilidades: "+posibles.size());
-                    for(int i=0; i<posibles.size(); i++) {
-                        if(validarCasillaMaquina(posibles.get(i),maq, jug, nodo)) { //si no está ocupada
-                            System.out.println("valida");
-                            int estado = 0;
-                            int manz1 = nodo.getManzanas();
-                            int man=0;
+        else{
+            int maq = miNodo.getPosMaquina();
+            int jug = miNodo.getPosJugador();
+            ArrayList<Integer> posibles;
+            int manz1 = miNodo.getManzanas();
+            int man=0;
+            if(miNodo.getTurno()%2==0){
+                posibles = getMovimientos(maq);
+                    for(int i=0; i<posibles.size(); i++){
+                        if(validarCasillaMaquina(posibles.get(i),maq, jug, miNodo)) { //si no está ocupada
                             if(posManzanas.contains(posibles.get(i))) {
                                 manz1--;
                                 man=1;
-                                estado = 1;
-                                System.out.println("manzana");
-                                Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1,nodo.getProfundidad()+1,nodo.getManzanas()+man);
-                                soluciones.add(aux);
-                                System.out.println("Tam Soluciones "+soluciones.size());
-                                System.out.println("utilidad: "+nodo.getUtilidad());
-                                System.out.println("agregó solución desde máquina");
-                            }else{
-                                Nodo aux = new Nodo(nodo, posibles.get(i), jug, estado, manz1,1,nodo.getProfundidad()+1,nodo.getManzanas()+man);
-                                arbol.add(aux);
-                            }     
+                            }
+                            Nodo aux = new Nodo(pos, posibles.get(i), jug,false, manz1,1,miNodo.getProfundidad()+1,miNodo.getManzanas()+man,0);
+                            arbol.add(aux);
+                            miniMax(aux,arbol.size()-1);       
                         }
                     }
-                    arbol.poll();
-                }
-                else if(nodo.getTurno()%2!=0) {
+                    miNodo.setManzanas(0);
+                    miniMax(miNodo,pos);
+            }
+            else if(miNodo.getTurno()%2!=0) {
                     posibles = getMovimientos(jug);
                     for(int i=0; i<posibles.size(); i++) {
-                        if(validarCasillaOponente(posibles.get(i),maq, jug, nodo)) { //si no está ocupada
-                            int estado = 0;
-                            int manz1 = nodo.getManzanas();
-                            int man=0;
+                        if(validarCasillaOponente(posibles.get(i),maq, jug, miNodo)) { //si no está ocupada
                             if(posManzanas.contains(posibles.get(i))) {
-                                estado = -1;
                                 manz1--;
-                                man++;
-                                Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2, nodo.getProfundidad()+1,nodo.getManzanas()-man);
-                                soluciones.add(aux);
-                                System.out.println("Tam Soluciones "+soluciones.size());
-                                System.out.println("utilidad: "+nodo.getUtilidad());
-                                System.out.println("agregó solución desde jugador");
-                            }else{
-                                Nodo aux = new Nodo(nodo, maq, posibles.get(i), estado, manz1, 2, nodo.getProfundidad()+1,nodo.getManzanas()-man);
-                                arbol.add(aux);
-                            }   
+                                man=1;
+                            }
+                            Nodo aux = new Nodo(pos, maq, posibles.get(i), false, manz1, 2, miNodo.getProfundidad()+1,miNodo.getManzanas()-man,0);
+                            arbol.add(aux);
+                            miniMax(aux,arbol.size()-1);
                         }
                     }
-                    arbol.poll();
-                }
-            }
-            else {
-                if(nodo.getTurno()==1)
-                    nodo.setUtilidad(1);
-                else if(nodo.getTurno()==2)
-                   nodo.setUtilidad(-1);
-                soluciones.add(nodo);
-                System.out.println("Tam Soluciones "+soluciones.size());
-                System.out.println("utilidad: "+nodo.getUtilidad());
-                System.out.println("agregó solución");
-                arbol.poll();
+                    miNodo.setManzanas(0);
+                    miniMax(miNodo,pos);
             }
         }
     }
 
     public int crearRaiz(int maquina, int jugador, int manz) {
-        Nodo raiz = new Nodo(null, maquina, jugador, 0,manzanasDisp, 0,0,0);
-        posManzanas.clear();
-        posManzanas.add(8);
+        int x=manzanasDisp;
+        Nodo raiz = new Nodo(-1, maquina, jugador, false,x, 0,0,0,0);
         arbol.add(raiz);
-        miniMax(maquina,jugador);
-        int resultado = calcMINIMAX();
+        miniMax(raiz,0);
         arbol.clear();
         return resultado;
     }

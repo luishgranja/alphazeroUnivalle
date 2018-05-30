@@ -2,30 +2,32 @@
 package logica;
 
 public class Nodo {
-        Nodo padre;
+        int nodoPadre;
         int posMaquina;
         int posJugador;
         //Variable para saber quien va ganando o si van empatados
         //-1 si la maquina va perdiendo , 1 si va ganando y 0 si estan empatados
-        int estado;
+        Boolean estado;
         int manzanas;
         int turno;
         int profundidad;
         int utilidad;
+        int sucesor;
   
 public Nodo(){
-      padre = null;
+      nodoPadre = -1;
       posMaquina = 0;
       posJugador = 0;
-      estado = 0;
+      estado = false;
       turno = 0;
       manzanas = 0;
       profundidad = 0;
       utilidad = 0;
+      sucesor=0;
      }
   
-    public Nodo( Nodo pPadre, int pPosMaquina, int pPosJugador, int pEstado, int pManzanas, int pTurno, int pProfundidad, int pUtilidad){
-      padre = pPadre;
+    public Nodo( int pPadre, int pPosMaquina, int pPosJugador, Boolean pEstado, int pManzanas, int pTurno, int pProfundidad, int pUtilidad, int posSucesor){
+      nodoPadre = pPadre;
       posMaquina = pPosMaquina;
       posJugador = pPosJugador;
       estado = pEstado;
@@ -33,10 +35,11 @@ public Nodo(){
       turno = pTurno;
       profundidad = pProfundidad;
       utilidad = pUtilidad;
+      sucesor = posSucesor;
     }
 
-    public void setPadre(Nodo padre) {
-        this.padre = padre;
+    public void setPadre(int padre) {
+        this.nodoPadre = padre;
     }
 
     public void setPosMaquina(int posMaquina) {
@@ -47,7 +50,7 @@ public Nodo(){
         this.posJugador = posJugador;
     }
 
-    public void setEstado(int estado) {
+    public void setEstado(Boolean estado) {
         this.estado = estado;
     }
 
@@ -59,8 +62,12 @@ public Nodo(){
         this.turno = turno;
     }
 
-    public Nodo getPadre() {
-        return padre;
+    public void setSucesor(int sucesor) {
+        this.sucesor = sucesor;
+    }
+
+    public int getPadre() {
+        return nodoPadre;
     }
 
     public int getPosMaquina() {
@@ -71,7 +78,7 @@ public Nodo(){
         return posJugador;
     }
 
-    public int getEstado() {
+    public Boolean getEstado() {
         return estado;
     }
 
@@ -97,6 +104,10 @@ public Nodo(){
 
     public void setUtilidad(int utilidad) {
         this.utilidad = utilidad;
+    }
+
+    public int getSucesor() {
+        return sucesor;
     }
     
     
