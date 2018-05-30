@@ -174,6 +174,7 @@ public class Principal extends javax.swing.JFrame {
            }
            else{
                int[] juego = controlador.generarJuego(numeroItems);
+               controlador.setCantidadManzanas(numeroItems);
                controlador.setCaballoMaquina(juego[0]);
                controlador.setCaballoOponente(juego[1]);
                ArrayList <Integer> manzanas = new ArrayList<>();
@@ -182,9 +183,7 @@ public class Principal extends javax.swing.JFrame {
                 }
                 controlador.setManzanas(manzanas);
                 cargarJuego(juego); 
-                int movimientoMaquina = controlador.moverMaquina();
-                System.out.println("La maquina se debe mover a: "+movimientoMaquina);
-                //habilitarBotones(30);
+                initJuego();
                 jugar.setEnabled(false);
            }
         } catch (HeadlessException | NumberFormatException e) {
@@ -194,65 +193,68 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jugarActionPerformed
 
-    public void juegoMaquina(int pos, int posActual){
+    public void mover(int jugador, int posActual, int posNext){
         
+        //Jugador = 0 --> Maquina
+        //Jugador = 1 --> Humano
         
-        switch (posActual-pos) {
-            //dos arriba uno derecha
-            case -11:
-                tablero.remove(posActual);
-                this.repaint();
-                tablero.add(blanco, posActual-6);
-                tablero.remove(posActual-6);
-                                try{
-                    Thread.sleep(500);
-                } catch (Exception e) {}      
-                this.paintAll(this.getGraphics());
-                tablero.add(blanco,posActual-6);
-                
-                break;
-                
-            //uno arriba - dos a la derecha
-            case -4:
-                break; 
-                
-            //uno abajo - dos a la derecha
-            case 8:
-                break;
-                
-            // 2 abajo - 1 derecha   
-            case 13:
-                break;
-                
-            //2 abajo - 1 izquierda    
-            case 11:
-                break;
+        tablero.remove(posActual);
+        habilitarBotones(posActual);
+        int nJuego = controlador.getCantidadManzanas() + 2;
+        int juego[] = new int[nJuego];
+        
+        switch(jugador){
             
-            //1 abajo - 2 izquierda
-            case 4:
+            case 0:
+                
+                juego[0] = posNext;
+                juego[1] = controlador.getCaballoOponente();
                 break;
                 
-            //1 arriba - 2 izquierda
-            case -8:
+            case 1:
+                juego[0] = controlador.getCaballoMaquina();
+                juego[1] = posNext;
                 break;
                 
-            //2 arriba - 1 izquierda
-            case -13:
-                break;
             default:
                 break;
         }
         
+        ArrayList <Integer> x = controlador.getManzanas();
+        for (int i = 2; i < x.size(); i++) {
+            juego[i] = x.get(i-2);
+            
+        }
+        tablero.removeAll();
+        cargarTablero();
+        cargarJuego(juego);
     }
     
     public void initJuego(){
         
+        //while (controlador.getCantidadManzanas() > 0) {
+            
+            //Juego maquina
+            int movimientoMaquina = controlador.moverMaquina();
+            System.out.println("La maquina se debe mover a: "+movimientoMaquina);
+            
+            try{
+                habilitarBotones(movimientoMaquina);
+                Thread.sleep(2000);
+            } catch (Exception e) {} 
+            mover(0, controlador.getCaballoMaquina(), movimientoMaquina);
+            controlador.setCaballoMaquina(movimientoMaquina);
+            
+            //juego humano
+            
+        
+        //}
     }
     
     
     public void cargarJuego(int[] juego){
         
-          //definicion de variables para las imagenes de los caballos
+        //definicion de variables para las imagenes de los caballos
         String auxCaballoBlanco = "/img/0.png";
         URL urlCaballoBlanco = this.getClass().getResource(auxCaballoBlanco);
         ImageIcon iconAux = new ImageIcon(urlCaballoBlanco);
@@ -294,15 +296,17 @@ public class Principal extends javax.swing.JFrame {
         
     }
     
-//public void habilitarBotones(int pos){
-//    //ArrayList<Integer> posibles = minimax.getMovimientos(juego[1]);
-//    for (int i = 0; i < 36; i++) {
-//        if (posibles.contains(i)) {
-//            tablero.getComponent(i).setBackground(LIGHT_GRAY);
-//            tablero.getComponent(i).setEnabled(true);
-//        }
-//    }
-//}
+public void habilitarBotones(int pos){
+
+    ArrayList<Integer> posibles = minimax.getMovimientos(pos);
+    
+    for (int i = 0; i < 36; i++){
+        if (posibles.contains(i)){
+            tablero.getComponent(i).setBackground(LIGHT_GRAY);
+            tablero.getComponent(i).setEnabled(true);
+        }
+    }
+}
     
 public void cargarTablero(){
     

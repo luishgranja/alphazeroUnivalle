@@ -18,6 +18,7 @@ public class Control {
     int caballoMaquina;
     int caballoOponente;
     ArrayList<Integer> manzanas;
+    int cantidadManzanas;
     
     public Control(){
         
@@ -26,6 +27,7 @@ public class Control {
         caballoOponente = 0;
         manzanas = new ArrayList<>();
         minimax.calcularTotalPosibilidades();
+        cantidadManzanas = 0;
     }
         
     //Asigna aleatoriamente las posiciones de los items dentro del tablero.
@@ -63,5 +65,31 @@ public class Control {
     public void setManzanas(ArrayList<Integer> manzanas) {
         this.manzanas = manzanas;
     }
+
+    public Min_Max getMinimax() {
+        return minimax;
+    }
+
+    public int getCaballoMaquina() {
+        return caballoMaquina;
+    }
+
+    public int getCaballoOponente() {
+        return caballoOponente;
+    }
+
+    public ArrayList<Integer> getManzanas() {
+        return manzanas;
+    }
+
+    public int getCantidadManzanas() {
+        return cantidadManzanas;
+    }
+
+    public void setCantidadManzanas(int cantidadManzanas) {
+        this.cantidadManzanas = cantidadManzanas;
+    }
    
+    
+    
 }
