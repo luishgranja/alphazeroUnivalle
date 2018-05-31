@@ -50,9 +50,7 @@ public class Principal extends javax.swing.JFrame {
         URL url = this.getClass().getResource(path);
         ImageIcon icon = new ImageIcon(url);
         banner.setIcon(icon);
-        
-      
-        
+
         controlador = new Control();
         minimax = new Min_Max();
         minimax.calcularTotalPosibilidades();
@@ -193,25 +191,38 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jugarActionPerformed
 
-    public void mover(int jugador, int posActual, int posNext){
-        
+     public void mover(int jugador, int posActual, int posNext){      
         //Jugador = 0 --> Maquina
         //Jugador = 1 --> Humano
-        
-        tablero.remove(posActual);
         habilitarBotones(posActual);
-        int nJuego = controlador.getCantidadManzanas() + 2;
-        int juego[] = new int[nJuego];
-        
+        try{
+                Thread.sleep(2000);
+            } catch (Exception e) {} 
+         tablero.remove(posActual);
+        int index = controlador.getManzanas().indexOf(posNext);
+        int nJuego;
+        int juego[]=new int[2];
         switch(jugador){
             
             case 0:
-                
+                if(index!=-1){
+                    controlador.getManzanas().remove(index);
+                    controlador.setPuntajeMaquina();
+                }else
+                    controlador.evitar(posActual);
+                nJuego = controlador.getManzanas().size() + 2;
+                juego = new int[nJuego];
                 juego[0] = posNext;
                 juego[1] = controlador.getCaballoOponente();
                 break;
                 
             case 1:
+                if(index!=-1){
+                    controlador.getManzanas().remove(index);
+                    controlador.setPuntajeJugador();
+                 }
+                nJuego = controlador.getManzanas().size() + 2;
+                juego = new int[nJuego];
                 juego[0] = controlador.getCaballoMaquina();
                 juego[1] = posNext;
                 break;
@@ -221,34 +232,60 @@ public class Principal extends javax.swing.JFrame {
         }
         
         ArrayList <Integer> x = controlador.getManzanas();
-        for (int i = 2; i < x.size(); i++) {
-            juego[i] = x.get(i-2);
-            
-        }
+        int cont=2;
+        if(controlador.getManzanas().size()>0)
+            for (int i = 0; i < x.size(); i++) {
+                juego[cont] = x.get(i);
+                cont++;
+            }
         tablero.removeAll();
         cargarTablero();
         cargarJuego(juego);
-    }
-    
-    public void initJuego(){
+        if (controlador.getManzanas().size()<controlador.getPuntajeJugador()) {
+            if (jugador==1) {
+                JOptionPane.showMessageDialog(null,"Ganaste");
+                controlador = new Control();
+                tablero.removeAll();
+                jugar.setEnabled(true);
+                cargarTablero();
+                this.paintAll(this.getGraphics());
+            }
+        }
+        else if (controlador.getManzanas().size()<controlador.getPuntajeMaquina()) {
+            if (jugador==0) {
+                JOptionPane.showMessageDialog(null,"Ganó la maquina");
+                controlador = new Control();
+                tablero.removeAll();
+                jugar.setEnabled(true);
+                cargarTablero();
+                this.paintAll(this.getGraphics());
+            }
+        }        
+        else if(controlador.getManzanas().isEmpty()){
+            if(controlador.getPuntajeJugador()>controlador.getPuntajeMaquina()){
+                    JOptionPane.showMessageDialog(null,"Ganaste");
+                    controlador = new Control();
+            }else if(controlador.getPuntajeMaquina()>controlador.getPuntajeJugador()){
+                    JOptionPane.showMessageDialog(null,"Ganó la maquina");
+                    controlador = new Control();
+                }
+            tablero.removeAll();
+            jugar.setEnabled(true);
+            cargarTablero();
+            this.paintAll(this.getGraphics());
+        }
         
-        //while (controlador.getCantidadManzanas() > 0) {
-            
-            //Juego maquina
-            int movimientoMaquina = controlador.moverMaquina();
+    }
+
+   public void initJuego(){
+       if(!controlador.getManzanas().isEmpty()){
+           int movimientoMaquina = controlador.moverMaquina();
             System.out.println("La maquina se debe mover a: "+movimientoMaquina);
             
-            try{
-                habilitarBotones(movimientoMaquina);
-                Thread.sleep(2000);
-            } catch (Exception e) {} 
             mover(0, controlador.getCaballoMaquina(), movimientoMaquina);
+            habilitarBotones(controlador.getCaballoOponente());
             controlador.setCaballoMaquina(movimientoMaquina);
-            
-            //juego humano
-            
-        
-        //}
+       }        
     }
     
     
@@ -288,6 +325,16 @@ public class Principal extends javax.swing.JFrame {
             botonManzana.setIcon(iconManzana);
             
             tablero.remove(juego[i]);
+            int x= juego[i];
+             botonManzana.addActionListener(new ActionListener() {
+                @Override
+             public void actionPerformed(ActionEvent ae) {
+                    mover(1, controlador.getCaballoOponente(),x);
+                    controlador.setCaballoOponente(x);
+                    initJuego();
+                }
+            });
+             botonManzana.setEnabled(false);
             tablero.add(botonManzana, juego[i]);
         }
         
@@ -300,13 +347,15 @@ public void habilitarBotones(int pos){
 
     ArrayList<Integer> posibles = minimax.getMovimientos(pos);
     
-    for (int i = 0; i < 36; i++){
-        if (posibles.contains(i)){
-            tablero.getComponent(i).setBackground(LIGHT_GRAY);
-            tablero.getComponent(i).setEnabled(true);
-        }
+    for (int i = 0; i < posibles.size(); i++){
+        tablero.getComponent(posibles.get(i)).setBackground(LIGHT_GRAY);
+        tablero.getComponent(posibles.get(i)).setEnabled(true);
     }
+    this.paintAll(this.getGraphics());
+     
 }
+
+
     
 public void cargarTablero(){
     
@@ -323,10 +372,13 @@ public void cargarTablero(){
             else
                 auxBoton.setBackground(BLACK);
             tablero.add(auxBoton);
+            int pos = j + 6 * i;
             auxBoton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    
+                    mover(1, controlador.getCaballoOponente(), pos);
+                    controlador.setCaballoOponente(pos);
+                    initJuego();
                 }
             });
         }

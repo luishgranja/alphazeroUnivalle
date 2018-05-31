@@ -19,6 +19,8 @@ public class Control {
     int caballoOponente;
     ArrayList<Integer> manzanas;
     int cantidadManzanas;
+    int puntajeMaquina;
+    int puntajeJugador;
     
     public Control(){
         
@@ -28,6 +30,8 @@ public class Control {
         manzanas = new ArrayList<>();
         minimax.calcularTotalPosibilidades();
         cantidadManzanas = 0;
+        puntajeJugador = 0;
+        puntajeMaquina = 0;
     }
         
     //Asigna aleatoriamente las posiciones de los items dentro del tablero.
@@ -43,12 +47,15 @@ public class Control {
     }
     
     public int moverMaquina(){
-        int next = 0;
+        int next;
         minimax.setPosManzanas(manzanas);
         next = minimax.crearRaiz(caballoMaquina, caballoOponente, manzanas.size());
         return next;
     }
     
+    public void evitar(int pos){
+        minimax.setEvitaPos(pos);
+    }
     //Valida que el movimiento que desea hacer el jugador sea Válido.
     public Boolean validaMovOponente(int pos){
         return casillaOcupada(pos);
@@ -88,6 +95,22 @@ public class Control {
 
     public void setCantidadManzanas(int cantidadManzanas) {
         this.cantidadManzanas = cantidadManzanas;
+    }
+
+    public int getPuntajeMaquina() {
+        return puntajeMaquina;
+    }
+
+    public void setPuntajeMaquina() {
+        puntajeMaquina++;
+    }
+
+    public int getPuntajeJugador() {
+        return puntajeJugador;
+    }
+
+    public void setPuntajeJugador() {
+        puntajeJugador++;
     }
    
     

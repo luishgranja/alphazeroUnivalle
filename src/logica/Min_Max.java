@@ -17,6 +17,7 @@ public class Min_Max {
     ArrayList<Integer> posManzanas;
     ArrayList<Nodo> soluciones;
     int resultado;
+    int evitaPos;
 
     public Min_Max() {
         totalPosibilidades =  (ArrayList<Integer>[])new ArrayList<?>[36];
@@ -24,11 +25,13 @@ public class Min_Max {
         for(int i = 0; i < totalPosibilidades.length; i++) {
             totalPosibilidades[i] = new ArrayList<>();
         }
-
-        arbol = new ArrayList<>();
+        
+       arbol = new ArrayList<>();
         posManzanas = new ArrayList<>();
         soluciones = new ArrayList<>();
         resultado=0;
+        evitaPos=-1;
+        
     }
 
     public Boolean validarCasillaMaquina(int pos, int maquina, int oponente, Nodo padre) {
@@ -52,7 +55,7 @@ public class Min_Max {
     }
 
     public void miniMax(Nodo miNodo, int pos) {
-        if(miNodo.getManzanas()==0 ||miNodo.getProfundidad()>=8 ){
+        if(miNodo.getManzanas()==0 ||miNodo.getProfundidad()>=11){
            if(miNodo.getProfundidad()>=8)
                miNodo.setEstado(true);
             switch (miNodo.getTurno()) {
@@ -61,7 +64,7 @@ public class Min_Max {
                     break;
                 case 1:
                     if(miNodo.getEstado()==false)
-                        miNodo.setUtilidad(10-miNodo.getProfundidad());
+                        miNodo.setUtilidad(20-miNodo.getProfundidad());
                     if(arbol.get(miNodo.getPadre()).getEstado()==false){
                         arbol.get(miNodo.getPadre()).setUtilidad(miNodo.getUtilidad());
                         arbol.get(miNodo.getPadre()).setSucesor(pos);
@@ -105,7 +108,7 @@ public class Min_Max {
             if(miNodo.getTurno()%2==0){
                 posibles = getMovimientos(maq);
                     for(int i=0; i<posibles.size(); i++){
-                        if(validarCasillaMaquina(posibles.get(i),maq, jug, miNodo)) { //si no está ocupada
+                        if(validarCasillaMaquina(posibles.get(i),maq, jug, miNodo)&&posibles.get(i)!=evitaPos) { //si no está ocupada y no se devuelve
                             if(posManzanas.contains(posibles.get(i))) {
                                 manz1--;
                                 man=1;
@@ -115,6 +118,7 @@ public class Min_Max {
                             miniMax(aux,arbol.size()-1);       
                         }
                     }
+                    evitaPos=-1;
                     miNodo.setManzanas(0);
                     miniMax(miNodo,pos);
             }
@@ -135,6 +139,10 @@ public class Min_Max {
                     miniMax(miNodo,pos);
             }
         }
+    }
+    
+    public void setEvitaPos(int pos){
+        this.evitaPos=pos;
     }
 
     public int crearRaiz(int maquina, int jugador, int manz) {
