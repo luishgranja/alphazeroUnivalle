@@ -55,7 +55,7 @@ public class Min_Max {
     }
 
     public void miniMax(Nodo miNodo, int pos) {
-        if(miNodo.getManzanas()==0 ||miNodo.getProfundidad()>=11){
+        if(miNodo.getManzanas()==1 || miNodo.getProfundidad()>=8){
            if(miNodo.getProfundidad()>=8)
                miNodo.setEstado(true);
             switch (miNodo.getTurno()) {
@@ -103,23 +103,21 @@ public class Min_Max {
             int maq = miNodo.getPosMaquina();
             int jug = miNodo.getPosJugador();
             ArrayList<Integer> posibles;
-            int manz1 = miNodo.getManzanas();
             int man=0;
             if(miNodo.getTurno()%2==0){
                 posibles = getMovimientos(maq);
                     for(int i=0; i<posibles.size(); i++){
                         if(validarCasillaMaquina(posibles.get(i),maq, jug, miNodo)&&posibles.get(i)!=evitaPos) { //si no está ocupada y no se devuelve
                             if(posManzanas.contains(posibles.get(i))) {
-                                manz1--;
                                 man=1;
                             }
-                            Nodo aux = new Nodo(pos, posibles.get(i), jug,false, manz1,1,miNodo.getProfundidad()+1,miNodo.getManzanas()+man,0);
+                            Nodo aux = new Nodo(pos, posibles.get(i), jug,false,man,1,miNodo.getProfundidad()+1,miNodo.getManzanas()+man,0);
                             arbol.add(aux);
                             miniMax(aux,arbol.size()-1);       
                         }
                     }
                     evitaPos=-1;
-                    miNodo.setManzanas(0);
+                    miNodo.setManzanas(1);
                     miniMax(miNodo,pos);
             }
             else if(miNodo.getTurno()%2!=0) {
@@ -127,15 +125,14 @@ public class Min_Max {
                     for(int i=0; i<posibles.size(); i++) {
                         if(validarCasillaOponente(posibles.get(i),maq, jug, miNodo)) { //si no está ocupada
                             if(posManzanas.contains(posibles.get(i))) {
-                                manz1--;
                                 man=1;
                             }
-                            Nodo aux = new Nodo(pos, maq, posibles.get(i), false, manz1, 2, miNodo.getProfundidad()+1,miNodo.getManzanas()-man,0);
+                            Nodo aux = new Nodo(pos, maq, posibles.get(i), false, man, 2, miNodo.getProfundidad()+1,miNodo.getManzanas()-man,0);
                             arbol.add(aux);
                             miniMax(aux,arbol.size()-1);
                         }
                     }
-                    miNodo.setManzanas(0);
+                    miNodo.setManzanas(1);
                     miniMax(miNodo,pos);
             }
         }
