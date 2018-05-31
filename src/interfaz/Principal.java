@@ -54,6 +54,8 @@ public class Principal extends javax.swing.JFrame {
         controlador = new Control();
         minimax = new Min_Max();
         minimax.calcularTotalPosibilidades();
+        campoJugador.setText(""+0);
+        campoMaquina.setText(""+0);
         cargarTablero();
         
     }
@@ -74,6 +76,12 @@ public class Principal extends javax.swing.JFrame {
         items = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jugar = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        campoMaquina = new javax.swing.JTextField();
+        campoJugador = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -87,7 +95,7 @@ public class Principal extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(banner, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+            .addComponent(banner, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
         );
 
         jLabel1.setText("# de Items");
@@ -99,20 +107,57 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("PUNTAJES");
+
+        jLabel3.setText("Maquina");
+
+        jLabel4.setText("Jugador");
+
+        campoMaquina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoMaquinaActionPerformed(evt);
+            }
+        });
+
+        campoJugador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoJugadorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(items))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(items)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(campoMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel1)
-                .addGap(0, 16, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jugar)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jugar))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(campoJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addComponent(jLabel1))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel2)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -124,7 +169,19 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(items, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jugar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(campoMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(campoJugador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -137,9 +194,9 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tablero, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 8, Short.MAX_VALUE)))
+                        .addGap(0, 6, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -191,6 +248,14 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jugarActionPerformed
 
+    private void campoMaquinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoMaquinaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campoMaquinaActionPerformed
+
+    private void campoJugadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoJugadorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campoJugadorActionPerformed
+
      public void mover(int jugador, int posActual, int posNext){      
         //Jugador = 0 --> Maquina
         //Jugador = 1 --> Humano
@@ -208,6 +273,7 @@ public class Principal extends javax.swing.JFrame {
                 if(index!=-1){
                     controlador.getManzanas().remove(index);
                     controlador.setPuntajeMaquina();
+                    campoJugador.setText(""+controlador.getPuntajeMaquina());
                 }else
                     controlador.evitar(posActual);
                 nJuego = controlador.getManzanas().size() + 2;
@@ -220,6 +286,7 @@ public class Principal extends javax.swing.JFrame {
                 if(index!=-1){
                     controlador.getManzanas().remove(index);
                     controlador.setPuntajeJugador();
+                    campoJugador.setText(""+controlador.getPuntajeJugador());
                  }
                 nJuego = controlador.getManzanas().size() + 2;
                 juego = new int[nJuego];
@@ -248,6 +315,9 @@ public class Principal extends javax.swing.JFrame {
                 tablero.removeAll();
                 jugar.setEnabled(true);
                 cargarTablero();
+                items.setText(null);
+                campoMaquina.setText(null);
+                campoJugador.setText(null);                
                 this.paintAll(this.getGraphics());
             }
         }
@@ -258,6 +328,9 @@ public class Principal extends javax.swing.JFrame {
                 tablero.removeAll();
                 jugar.setEnabled(true);
                 cargarTablero();
+                items.setText(null);
+                campoMaquina.setText(null);
+                campoJugador.setText(null);                
                 this.paintAll(this.getGraphics());
             }
         }        
@@ -272,6 +345,9 @@ public class Principal extends javax.swing.JFrame {
             tablero.removeAll();
             jugar.setEnabled(true);
             cargarTablero();
+                items.setText(null);
+                campoMaquina.setText(null);
+                campoJugador.setText(null);            
             this.paintAll(this.getGraphics());
         }
         
@@ -386,10 +462,16 @@ public void cargarTablero(){
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel banner;
+    private javax.swing.JTextField campoJugador;
+    private javax.swing.JTextField campoMaquina;
     private javax.swing.JTextField items;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton jugar;
     private javax.swing.JPanel tablero;
     // End of variables declaration//GEN-END:variables
