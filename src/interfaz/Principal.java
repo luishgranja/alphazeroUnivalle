@@ -34,6 +34,7 @@ public class Principal extends javax.swing.JFrame {
     URL urlCaballoNegro;
     ImageIcon iconNegro;
     JButton negro;
+    int posEvitar;
     
     
     /**
@@ -56,7 +57,9 @@ public class Principal extends javax.swing.JFrame {
         minimax.calcularTotalPosibilidades();
         campoJugador.setText(""+0);
         campoMaquina.setText(""+0);
+       posEvitar=-1;
         cargarTablero();
+       
         
     }
 
@@ -261,7 +264,7 @@ public class Principal extends javax.swing.JFrame {
         //Jugador = 1 --> Humano
         habilitarBotones(posActual);
         try{
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (Exception e) {} 
          tablero.remove(posActual);
         int index = controlador.getManzanas().indexOf(posNext);
@@ -273,9 +276,17 @@ public class Principal extends javax.swing.JFrame {
                 if(index!=-1){
                     controlador.getManzanas().remove(index);
                     controlador.setPuntajeMaquina();
-                    campoJugador.setText(""+controlador.getPuntajeMaquina());
-                }else
-                    controlador.evitar(posActual);
+                    campoMaquina.setText(""+controlador.getPuntajeMaquina());
+                }                
+                if(controlador.getPuntajeJugador()==controlador.getPuntajeMaquina()){
+                    posEvitar=controlador.getCaballoMaquina();
+                    controlador.evitar(posNext);
+                }
+                else{
+                     posEvitar=posActual;
+                     controlador.evitar(posEvitar);
+                }
+                   
                 nJuego = controlador.getManzanas().size() + 2;
                 juego = new int[nJuego];
                 juego[0] = posNext;
@@ -288,10 +299,19 @@ public class Principal extends javax.swing.JFrame {
                     controlador.setPuntajeJugador();
                     campoJugador.setText(""+controlador.getPuntajeJugador());
                  }
+                if(controlador.getPuntajeJugador()==controlador.getPuntajeMaquina()){
+                    posEvitar=controlador.getCaballoMaquina();
+                    controlador.evitar(posEvitar);
+                }
+                else{
+                    
+                }
+               
                 nJuego = controlador.getManzanas().size() + 2;
                 juego = new int[nJuego];
                 juego[0] = controlador.getCaballoMaquina();
                 juego[1] = posNext;
+                
                 break;
                 
             default:
@@ -308,8 +328,8 @@ public class Principal extends javax.swing.JFrame {
         tablero.removeAll();
         cargarTablero();
         cargarJuego(juego);
-        if (controlador.getManzanas().size()<controlador.getPuntajeJugador()) {
-            if (jugador==1) {
+        if (jugador==1) {
+            if (controlador.getManzanas().size()+controlador.getPuntajeMaquina()<controlador.getPuntajeJugador()) {
                 JOptionPane.showMessageDialog(null,"Ganaste");
                 controlador = new Control();
                 tablero.removeAll();
@@ -321,8 +341,8 @@ public class Principal extends javax.swing.JFrame {
                 this.paintAll(this.getGraphics());
             }
         }
-        else if (controlador.getManzanas().size()<controlador.getPuntajeMaquina()) {
-            if (jugador==0) {
+        else if (jugador==0) {
+            if (controlador.getManzanas().size()+controlador.getPuntajeJugador()<controlador.getPuntajeMaquina()) {
                 JOptionPane.showMessageDialog(null,"Ganó la maquina");
                 controlador = new Control();
                 tablero.removeAll();
@@ -356,12 +376,11 @@ public class Principal extends javax.swing.JFrame {
    public void initJuego(){
        if(!controlador.getManzanas().isEmpty()){
            int movimientoMaquina = controlador.moverMaquina();
-            System.out.println("La maquina se debe mover a: "+movimientoMaquina);
             
             mover(0, controlador.getCaballoMaquina(), movimientoMaquina);
             habilitarBotones(controlador.getCaballoOponente());
             controlador.setCaballoMaquina(movimientoMaquina);
-       }        
+       }       
     }
     
     

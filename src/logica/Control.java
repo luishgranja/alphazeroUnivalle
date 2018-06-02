@@ -49,7 +49,7 @@ public class Control {
     public int moverMaquina(){
         int next;
         minimax.setPosManzanas(manzanas);
-        next = minimax.crearRaiz(caballoMaquina, caballoOponente, manzanas.size());
+        next = minimax.crearRaiz(caballoMaquina, caballoOponente);
         return next;
     }
     
